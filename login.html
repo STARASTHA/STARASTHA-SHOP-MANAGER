@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STARASTHA MANAGER</title>
+</head>
+<body>
+    
+</body>
+</html>
+<style>
+body{
+font-family:Arial;
+background:#f2f2f2;
+margin:0;
+}
+
+header{
+background:#2196F3;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+.container{
+width:90%;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:20px;
+margin:20px 0;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+
+input,select,textarea{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+background:#2196F3;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0b7dda;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+table th,table td{
+border:1px solid #ddd;
+padding:10px;
+text-align:left;
+}
+
+th{
+background:#2196F3;
+color:white;
+}
+
+.summary{
+display:flex;
+gap:20px;
+}
+
+.box{
+flex:1;
+background:#4CAF50;
+color:white;
+padding:20px;
+border-radius:10px;
+text-align:center;
+font-size:20px;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+<h1>STARASTHA SHOP MANAGER</h1>
+</header>
+
+<div class="container">
+
+<div class="summary">
+<div class="box" id="customerCount">Customers : 0</div>
+<div class="box" id="staffCount">Staff : 0</div>
+<div class="box" id="balance">Balance : ₹0</div>
+</div>
+
+<div class="card">
+
+<h2>Add Customer</h2>
+
+<input type="text" id="cname" placeholder="Customer Name">
+
+<input type="text" id="mobile" placeholder="Mobile Number">
+
+<input type="text" id="address" placeholder="Address">
+
+<textarea id="notes" placeholder="Notes"></textarea>
+
+<button onclick="addCustomer()">Save Customer</button>
+
+<table id="customerTable">
+<tr>
+<th>Name</th>
+<th>Mobile</th>
+<th>Address</th>
+<th>Notes</th>
+</tr>
+</table>
+
+</div>
+
+<div class="card">
+
+<h2>Add Staff</h2>
+
+<input type="text" id="sname" placeholder="Staff Name">
+
+<select id="day">
+<option>Monday</option>
+<option>Tuesday</option>
+<option>Wednesday</option>
+<option>Thursday</option>
+<option>Friday</option>
+<option>Saturday</option>
+<option>Sunday</option>
+</select>
+
+<input type="text" id="shift" placeholder="Shift Timing (9AM-6PM)">
+
+<button onclick="addStaff()">Add Staff</button>
+
+<table id="staffTable">
+
+<tr>
+<th>Name</th>
+<th>Day</th>
+<th>Shift</th>
+</tr>
+
+</table>
+
+</div>
+
+<div class="card">
+
+<h2>Accounts</h2>
+
+<select id="type">
+<option>Income</option>
+<option>Expense</option>
+</select>
+
+<input type="number" id="amount" placeholder="Amount">
+
+<input type="text" id="reason" placeholder="Reason">
+
+<button onclick="addAccount()">Save</button>
+
+<table id="accountTable">
+
+<tr>
+<th>Type</th>
+<th>Amount</th>
+<th>Reason</th>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let customers=JSON.parse(localStorage.getItem("customers"))||[];
+let staffs=JSON.parse(localStorage.getItem("staffs"))||[];
+let accounts=JSON.parse(localStorage.getItem("accounts"))||[];
+
+function save(){
+localStorage.setItem("customers",JSON.stringify(customers));
+localStorage.setItem("staffs",JSON.stringify(staffs));
+localStorage.setItem("accounts",JSON.stringify(accounts));
+}
+
+function load(){
+
+customers.forEach(showCustomer);
+staffs.forEach(showStaff);
+accounts.forEach(showAccount);
+
+updateSummary();
+
+}
+
+function addCustomer(){
+
+let obj={
+name:cname.value,
+mobile:mobile.value,
+address:address.value,
+notes:notes.value
+};
+
+customers.push(obj);
+
+save();
+
+showCustomer(obj);
+
+updateSummary();
+
+cname.value="";
+mobile.value="";
+address.value="";
+notes.value="";
+
+}
+
+function showCustomer(c){
+
+let row=customerTable.insertRow();
+
+row.insertCell(0).innerHTML=c.name;
+row.insertCell(1).innerHTML=c.mobile;
+row.insertCell(2).innerHTML=c.address;
+row.insertCell(3).innerHTML=c.notes;
+
+}
+
+function addStaff(){
+
+let obj={
+name:sname.value,
+day:day.value,
+shift:shift.value
+};
+
+staffs.push(obj);
+
+save();
+
+showStaff(obj);
+
+updateSummary();
+
+sname.value="";
+shift.value="";
+
+}
+
+function showStaff(s){
+
+let row=staffTable.insertRow();
+
+row.insertCell(0).innerHTML=s.name;
+row.insertCell(1).innerHTML=s.day;
+row.insertCell(2).innerHTML=s.shift;
+
+}
+
+function addAccount(){
+
+let obj={
+type:type.value,
+amount:Number(amount.value),
+reason:reason.value
+};
+
+accounts.push(obj);
+
+save();
+
+showAccount(obj);
+
+updateSummary();
+
+amount.value="";
+reason.value="";
+
+}
+
+function showAccount(a){
+
+let row=accountTable.insertRow();
+
+row.insertCell(0).innerHTML=a.type;
+row.insertCell(1).innerHTML="₹"+a.amount;
+row.insertCell(2).innerHTML=a.reason;
+
+}
+
+function updateSummary(){
+
+customerCount.innerHTML="Customers : "+customers.length;
+
+staffCount.innerHTML="Staff : "+staffs.length;
+
+let total=0;
+
+accounts.forEach(a=>{
+if(a.type=="Income")
+total+=a.amount;
+else
+total-=a.amount;
+});
+
+balance.innerHTML="Balance : ₹"+total;
+
+}
+
+load();
+
+</script>
+
+</body>
+</html>
